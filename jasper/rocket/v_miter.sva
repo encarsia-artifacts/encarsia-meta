@@ -1,0 +1,52 @@
+module v_miter (
+  in_clock,
+  in_reset,
+  host_output,
+  host_observables,
+  reference_output,
+  reference_observables,
+  in_io_dmem_resp_bits_data_word_bypass,
+  in_io_dmem_resp_bits_data,
+  in_io_fpu_store_data,
+  in_io_fpu_toint_data,
+  instr
+);
+
+input in_clock;
+input in_reset;
+input host_output;
+input [63:0] host_observables;
+input reference_output;
+input [63:0] reference_observables;
+input [63:0] in_io_dmem_resp_bits_data_word_bypass;
+input [63:0] in_io_dmem_resp_bits_data;
+input [63:0] in_io_fpu_store_data;
+input [63:0] in_io_fpu_toint_data;
+input [31:0] instr;
+
+property propagated;
+  @(posedge in_clock) host_observables != reference_observables;
+endproperty
+c_propagated: cover property (propagated);
+
+p_data_bypass: assume property (@(posedge in_clock) in_io_dmem_resp_bits_data_word_bypass == 0);
+p_data: assume property (@(posedge in_clock) in_io_dmem_resp_bits_data == 0);
+p_fpu_data: assume property (@(posedge in_clock) in_io_fpu_store_data == 0);
+p_fpu_toint: assume property (@(posedge in_clock) in_io_fpu_toint_data == 0);
+
+endmodule
+
+bind miter
+  v_miter i_miter (
+  .in_clock(in_clock),
+  .in_reset(in_reset),
+  .host_output(host_output),
+  .host_observables(host_observables),
+  .reference_output(reference_output),
+  .reference_observables(reference_observables),
+  .in_io_dmem_resp_bits_data_word_bypass(in_io_dmem_resp_bits_data_word_bypass),
+  .in_io_dmem_resp_bits_data(in_io_dmem_resp_bits_data),
+  .in_io_fpu_store_data(in_io_fpu_store_data),
+  .in_io_fpu_toint_data(in_io_fpu_toint_data),
+  .instr(in_io_imem_resp_bits_data)
+);

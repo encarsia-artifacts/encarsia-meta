@@ -1,0 +1,59 @@
+module v_miter (
+  in_clock,
+  in_reset,
+
+  in_io_lsu_exe_0_fresp_bits_data,
+  in_io_lsu_exe_0_iresp_bits_data,
+  in_io_ifu_fetchpacket_bits_uops_0_bits_debug_inst,
+  in_io_ifu_fetchpacket_bits_uops_0_bits_debug_pc,
+  in_io_lsu_lxcpt_bits_badvaddr,
+
+  host_fregs_data,
+  reference_fregs_data,
+  host_iregs_data,
+  reference_iregs_data
+);
+
+input in_clock;
+input in_reset;
+
+input [64:0] in_io_lsu_exe_0_fresp_bits_data;
+input [63:0] in_io_lsu_exe_0_iresp_bits_data;
+input [31:0] in_io_ifu_fetchpacket_bits_uops_0_bits_debug_inst;
+input [39:0] in_io_ifu_fetchpacket_bits_uops_0_bits_debug_pc;
+input [39:0] in_io_lsu_lxcpt_bits_badvaddr;
+
+input [64:0] host_fregs_data;
+input [64:0] reference_fregs_data;
+input [63:0] host_iregs_data;
+input [63:0] reference_iregs_data;
+
+property propagated;
+  @(posedge in_clock) (host_fregs_data != reference_fregs_data) || (host_iregs_data != reference_iregs_data);
+endproperty
+c_propagated: cover property (propagated);
+
+p_fresp: assume property (in_io_lsu_exe_0_fresp_bits_data == 0);
+p_iresp: assume property (in_io_lsu_exe_0_iresp_bits_data == 0);
+p_debug_inst: assume property (in_io_ifu_fetchpacket_bits_uops_0_bits_debug_inst == 0);
+p_debug_pc: assume property (in_io_ifu_fetchpacket_bits_uops_0_bits_debug_pc == 0);
+p_badvaddr: assume property (in_io_lsu_lxcpt_bits_badvaddr == 0);
+
+endmodule
+
+bind miter
+  v_miter i_miter (
+  .in_clock(in_clock),
+  .in_reset(in_reset),
+
+  .in_io_lsu_exe_0_fresp_bits_data(in_io_lsu_exe_0_fresp_bits_data),
+  .in_io_lsu_exe_0_iresp_bits_data(in_io_lsu_exe_0_iresp_bits_data),
+  .in_io_ifu_fetchpacket_bits_uops_0_bits_debug_inst(in_io_ifu_fetchpacket_bits_uops_0_bits_debug_inst),
+  .in_io_ifu_fetchpacket_bits_uops_0_bits_debug_pc(in_io_ifu_fetchpacket_bits_uops_0_bits_debug_pc),
+  .in_io_lsu_lxcpt_bits_badvaddr(in_io_lsu_lxcpt_bits_badvaddr),
+
+  .host_fregs_data(\host.fp_pipeline.fregister_read.exe_reg_rs1_data_0 ),
+  .reference_fregs_data(\reference.fp_pipeline.fregister_read.exe_reg_rs1_data_0 ),
+  .host_iregs_data(\host.iregfile.regfile_read_data_0_MPORT_data ),
+  .reference_iregs_data(\reference.iregfile.regfile_read_data_0_MPORT_data )
+);

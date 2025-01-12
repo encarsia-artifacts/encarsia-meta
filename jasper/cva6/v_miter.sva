@@ -1,0 +1,93 @@
+module v_miter (
+  in_clk_i,
+  in_rst_ni,
+
+  host_output,
+  host_observables,
+  reference_output,
+  reference_observables,
+
+  in_boot_addr_i,
+  in_hart_id_i,
+  in_irq_i,
+  in_ipi_i,
+  in_time_irq_i,
+  in_debug_req_i,
+  in_cvxif_resp_i,
+  in_l15_rtrn_i,
+  in_axi_resp_i,
+
+  disable_dcache,
+  disable_icache,
+
+  instr
+);
+
+input in_clk_i;
+input in_rst_ni;
+
+input [31:0] host_output;
+input [31:0] host_observables;
+input [31:0] reference_output;
+input [31:0] reference_observables;
+
+input [63:0] in_boot_addr_i;
+input [63:0] in_hart_id_i;
+input [1:0] in_irq_i;
+input in_ipi_i;
+input in_time_irq_i;
+input in_debug_req_i;
+input [226:0] in_cvxif_resp_i;
+input [292:0] in_l15_rtrn_i;
+input [209:0] in_axi_resp_i;
+
+input disable_dcache;
+input disable_icache;
+
+input [31:0] instr;
+
+// property sensitized;
+//   @(posedge in_clk_i) host_output != reference_output;
+// endproperty
+// c_sensitized: cover property (sensitized);
+
+property propagated;
+  @(posedge in_clk_i) host_observables != reference_observables;
+endproperty
+c_propagated: cover property (propagated);
+
+// p_data: assume property (@(posedge in_clk_i) in_data_rdata_i == 0);
+p_boot: assume property (@(posedge in_clk_i) in_boot_addr_i == 0);
+p_hart: assume property (@(posedge in_clk_i) in_hart_id_i == 0);
+p_l15: assume property (@(posedge in_clk_i) in_l15_rtrn_i == 0);
+
+// p_dcache: assume property (@(posedge in_clk_i) disable_dcache == 0);
+// p_icache: assume property (@(posedge in_clk_i) disable_icache == 0);
+
+endmodule
+
+bind miter
+  v_miter i_miter (
+  .in_clk_i(in_clk_i),
+  .in_rst_ni(in_rst_ni),
+
+  .host_output(host_output),
+  .host_observables(host_observables[351:320]),
+  .reference_output(reference_output),
+  .reference_observables(reference_observables[351:320]),
+
+  .in_boot_addr_i(in_boot_addr_i),
+  .in_hart_id_i(in_hart_id_i),
+  .in_irq_i(in_irq_i),
+  .in_ipi_i(in_ipi_i),
+  .in_time_irq_i(in_time_irq_i),
+  .in_debug_req_i(in_debug_req_i),
+  .in_cvxif_resp_i(in_cvxif_resp_i),
+  .in_l15_rtrn_i(in_l15_rtrn_i),
+  .in_axi_resp_i(in_axi_resp_i),
+
+  .disable_dcache(\reference.genblk3.i_cache_subsystem.dcache_enable_i ),
+  .disable_icache(\reference.genblk3.i_cache_subsystem.icache_en_i ),
+
+  .instr()
+);

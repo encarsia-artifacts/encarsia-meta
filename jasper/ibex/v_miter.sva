@@ -1,0 +1,51 @@
+module v_miter (
+  in_clk_i,
+  in_rst_ni,
+
+  host_output,
+  host_observables,
+  reference_output,
+  reference_observables,
+
+  in_data_rdata_i,
+  in_boot_addr_i,
+  in_hart_id_i
+);
+
+input in_clk_i;
+input in_rst_ni;
+
+input [31:0] host_output;
+input [31:0] host_observables;
+input [31:0] reference_output;
+input [31:0] reference_observables;
+
+input [31:0] in_data_rdata_i;
+input [31:0] in_boot_addr_i;
+input [31:0] in_hart_id_i;
+
+property propagated;
+  @(posedge in_clk_i) host_observables != reference_observables;
+endproperty
+c_propagated: cover property (propagated);
+
+p_data: assume property (@(posedge in_clk_i) in_data_rdata_i == 0);
+p_boot: assume property (@(posedge in_clk_i) in_boot_addr_i == 0);
+p_hart: assume property (@(posedge in_clk_i) in_hart_id_i == 0);
+
+endmodule
+
+bind miter
+  v_miter i_miter (
+  .in_clk_i(in_clk_i),
+  .in_rst_ni(in_rst_ni),
+
+  .host_output(host_output),
+  .host_observables(host_observables[351:320]),
+  .reference_output(reference_output),
+  .reference_observables(reference_observables[351:320]),
+
+  .in_data_rdata_i(in_data_rdata_i),
+  .in_boot_addr_i(in_boot_addr_i),
+  .in_hart_id_i(in_hart_id_i)
+);
