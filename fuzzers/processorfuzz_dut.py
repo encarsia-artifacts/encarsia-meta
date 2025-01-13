@@ -194,10 +194,10 @@ class ProcessorfuzzDUT():
                 contents = log_file.read()
                 if "MISMATCH:" not in contents and "Bug --" not in contents:
                     with open(self.check_summary, 'w') as check_summary_file:
-                        check_summary_file.write("FAIL: "+input)
+                        check_summary_file.write("DETECTED: "+input)
                     return self
                 
         with open(self.check_summary, 'w') as check_summary_file:
-            check_summary_file.write("SUCCESS")
+            check_summary_file.write("NOT DETECTED")
 
         return self

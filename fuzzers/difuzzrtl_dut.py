@@ -141,10 +141,10 @@ class DifuzzRTLDUT():
             with open(log, 'r') as log_file:
                 if "Bug --" not in log_file.read():
                     with open(self.check_summary, 'w') as check_summary_file:
-                        check_summary_file.write("FAIL: "+input)
+                        check_summary_file.write("DETECTED: "+input)
                     return self
                 
         with open(self.check_summary, 'w') as check_summary_file:
-            check_summary_file.write("SUCCESS")
+            check_summary_file.write("NOT DETECTED")
 
         return self

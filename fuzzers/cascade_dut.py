@@ -114,5 +114,18 @@ class CascadeDUT():
                 stdout=open(self.fuzz_log, 'w'),
                 env=self.env
             )
+
+        self.check_summary = os.path.join(self.directory, "check_summary.log")
+        if not os.path.exists(self.check_summary):
+            with open(self.check_summary, 'w') as check_summary_file:
+                with open(self.fuzz_log, 'r') as fuzz_log:
+                    contents = fuzz_log.read()
+                    if "Starting" not in contents:
+                        check_summary_file.write("DETECTED")
+                    elif "Failed" in contents:
+                        check_summary_file.write("DETECTED")
+                    else:
+                        check_summary_file.write("NOT DETECTED")
+                
         
         return self
