@@ -15,4 +15,4 @@ CASCADE_PATH = "/encarsia-cascade/fuzzer/do_fuzzdesign.py"
 PREFILTER_PATH = "/encarsia-cascade/fuzzer/do_testsingle.py"
 JASPER = os.path.abspath("cds_jasper")
 JASPER_SRCS = os.path.abspath("./jasper")
-FUZZING_TIMEOUT = 600
+FUZZING_TIMEOUT = 1800
