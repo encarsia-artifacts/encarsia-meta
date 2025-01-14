@@ -7,6 +7,7 @@ import subprocess
 import shutil
 import random
 import string
+import time
 
 import defines
 from host import Host
@@ -107,13 +108,16 @@ class CascadeDUT():
     def fuzz(self):
         self.fuzz_log = os.path.join(self.directory, "fuzz.log")
         if not os.path.exists(self.fuzz_log):
-            subprocess.run(
-                ["python", defines.CASCADE_PATH, self.host.name, "1", "0", "1", "0", self.verilator_executable],
-                check=True,
-                cwd=self.host.config.cascade_directory,
-                stdout=open(self.fuzz_log, 'w'),
-                env=self.env
-            )
+            with open(self.fuzz_log, 'w') as fuzz_log:
+                process = subprocess.Popen(
+                    ["python", defines.CASCADE_PATH, self.host.name, "1", "0", "1", "0", self.verilator_executable],
+                    cwd=self.host.config.cascade_directory,
+                    stdout=fuzz_log,
+                    stderr=subprocess.DEVNULL,
+                    env=self.env
+                )
+                time.sleep(defines.FUZZING_TIMEOUT)
+                process.terminate()
 
         self.check_summary = os.path.join(self.directory, "check_summary.log")
         if not os.path.exists(self.check_summary):

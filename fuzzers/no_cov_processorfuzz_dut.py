@@ -6,6 +6,7 @@ import os
 import subprocess
 import random
 import string
+import time
 
 import defines
 from host import Host
@@ -68,18 +69,17 @@ class NoCovProcessorfuzzDUT():
         return self
     
     def compile_dut(self):
-        self.fuzz_log = os.path.join(self.directory, "fuzz.log")
         self.build_directory = os.path.join(self.directory, "build")
         self.out_directory = os.path.join(self.directory, "out")
 
-        if not os.path.exists(self.fuzz_log):
+        if not os.path.exists(self.out_directory):
             subprocess.run(
                 [
                     "make",
                     f"SIM_BUILD={os.path.relpath(self.build_directory, defines.PROCESSORFUZZ_FUZZER)}",
                     f"VFILE={os.path.relpath(self.dut_path[:-2], defines.PROCESSORFUZZ_VERILOG)}",
                     f"TOPLEVEL={self.host.config.difuzzrtl_toplevel}",
-                    f"NUM_ITER=10000000",
+                    f"NUM_ITER=1",
                     f"OUT={os.path.relpath(self.out_directory, defines.PROCESSORFUZZ_FUZZER)}",
                     f"ALL_CSR=0",
                     f"FP_CSR=0",
@@ -88,9 +88,36 @@ class NoCovProcessorfuzzDUT():
                 ],
                 check=True,
                 cwd=defines.PROCESSORFUZZ_FUZZER,
-                stdout=open(self.fuzz_log, 'w'),
+                stdout=subprocess.DEVNULL,
                 env=self.env
             )
+
+        return self
+    
+    def fuzz(self):
+        self.fuzz_log = os.path.join(self.directory, "fuzz.log")
+        if not os.path.exists(self.fuzz_log):
+            with open(self.fuzz_log, 'w') as fuzz_log:
+                process = subprocess.Popen(
+                    [
+                        "make",
+                        f"SIM_BUILD={os.path.relpath(self.build_directory, defines.PROCESSORFUZZ_FUZZER)}",
+                        f"VFILE={os.path.relpath(self.dut_path[:-2], defines.PROCESSORFUZZ_VERILOG)}",
+                        f"TOPLEVEL={self.host.config.difuzzrtl_toplevel}",
+                        f"NUM_ITER=10000000",
+                        f"OUT={os.path.relpath(self.out_directory, defines.PROCESSORFUZZ_FUZZER)}",
+                        f"ALL_CSR=0",
+                        f"FP_CSR=0",
+                        f"NO_GUIDE=1",
+                        f"NO_ISA_GUIDE=1"
+                    ],
+                    cwd=defines.PROCESSORFUZZ_FUZZER,
+                    stdout=fuzz_log,
+                    stderr=subprocess.DEVNULL,
+                    env=self.env
+                )
+                time.sleep(defines.FUZZING_TIMEOUT)
+                process.terminate()
 
         return self
     

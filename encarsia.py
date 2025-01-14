@@ -91,6 +91,7 @@ if __name__ == "__main__":
                         duts = [DifuzzRTLDUT(host, bug) for bug in bugs]
                         duts = verifier_pool.map(DifuzzRTLDUT.create_dut, duts)
                         duts = verifier_pool.map(DifuzzRTLDUT.compile_dut, duts)
+                        duts = verifier_pool.map(DifuzzRTLDUT.fuzz, duts)
                         duts = verifier_pool.map(DifuzzRTLDUT.create_reference, duts)
                         duts = verifier_pool.map(DifuzzRTLDUT.compile_reference, duts)
                         duts = verifier_pool.map(DifuzzRTLDUT.check_mismatch, duts)
@@ -98,6 +99,7 @@ if __name__ == "__main__":
                         duts = [NoCovDifuzzRTLDUT(host, bug) for bug in bugs]
                         duts = verifier_pool.map(NoCovDifuzzRTLDUT.create_dut, duts)
                         duts = verifier_pool.map(NoCovDifuzzRTLDUT.compile_dut, duts)
+                        duts = verifier_pool.map(NoCovDifuzzRTLDUT.fuzz, duts)
                         duts = verifier_pool.map(NoCovDifuzzRTLDUT.create_reference, duts)
                         duts = verifier_pool.map(NoCovDifuzzRTLDUT.compile_reference, duts)
                         duts = verifier_pool.map(NoCovDifuzzRTLDUT.check_mismatch, duts)
@@ -105,6 +107,7 @@ if __name__ == "__main__":
                         duts = [ProcessorfuzzDUT(host, bug) for bug in bugs]
                         duts = verifier_pool.map(ProcessorfuzzDUT.create_dut, duts)
                         duts = verifier_pool.map(ProcessorfuzzDUT.compile_dut, duts)
+                        duts = verifier_pool.map(ProcessorfuzzDUT.fuzz, duts)
                         duts = verifier_pool.map(ProcessorfuzzDUT.create_reference, duts)
                         duts = verifier_pool.map(ProcessorfuzzDUT.compile_reference, duts)
                         duts = verifier_pool.map(ProcessorfuzzDUT.check_mismatch, duts)
@@ -112,6 +115,7 @@ if __name__ == "__main__":
                         duts = [NoCovProcessorfuzzDUT(host, bug) for bug in bugs]
                         duts = verifier_pool.map(NoCovProcessorfuzzDUT.create_dut, duts)
                         duts = verifier_pool.map(NoCovProcessorfuzzDUT.compile_dut, duts)
+                        duts = verifier_pool.map(NoCovProcessorfuzzDUT.fuzz, duts)
                         duts = verifier_pool.map(NoCovProcessorfuzzDUT.create_reference, duts)
                         duts = verifier_pool.map(NoCovProcessorfuzzDUT.compile_reference, duts)
                         duts = verifier_pool.map(NoCovProcessorfuzzDUT.check_mismatch, duts)
