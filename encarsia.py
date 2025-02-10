@@ -88,6 +88,9 @@ if __name__ == "__main__":
                         duts = verifier_pool.map(CascadeDUT.compile_dut, duts)
                         duts = verifier_pool.map(CascadeDUT.fuzz, duts)
                     elif fuzzer == "difuzzrtl":
+                        if host.name == "ibex":
+                            print("DifuzzRTL does not support Ibex, skipping!")
+                            continue
                         duts = [DifuzzRTLDUT(host, bug) for bug in bugs]
                         duts = verifier_pool.map(DifuzzRTLDUT.create_dut, duts)
                         duts = verifier_pool.map(DifuzzRTLDUT.compile_dut, duts)
@@ -96,6 +99,9 @@ if __name__ == "__main__":
                         duts = verifier_pool.map(DifuzzRTLDUT.compile_reference, duts)
                         duts = verifier_pool.map(DifuzzRTLDUT.check_mismatch, duts)
                     elif fuzzer == "no_cov_difuzzrtl":
+                        if host.name == "ibex":
+                            print("DifuzzRTL does not support Ibex, skipping!")
+                            continue
                         duts = [NoCovDifuzzRTLDUT(host, bug) for bug in bugs]
                         duts = verifier_pool.map(NoCovDifuzzRTLDUT.create_dut, duts)
                         duts = verifier_pool.map(NoCovDifuzzRTLDUT.compile_dut, duts)
@@ -104,6 +110,9 @@ if __name__ == "__main__":
                         duts = verifier_pool.map(NoCovDifuzzRTLDUT.compile_reference, duts)
                         duts = verifier_pool.map(NoCovDifuzzRTLDUT.check_mismatch, duts)
                     elif fuzzer == "processorfuzz":
+                        if host.name == "ibex":
+                            print("ProcessorFuzz does not support Ibex, skipping!")
+                            continue
                         duts = [ProcessorfuzzDUT(host, bug) for bug in bugs]
                         duts = verifier_pool.map(ProcessorfuzzDUT.create_dut, duts)
                         duts = verifier_pool.map(ProcessorfuzzDUT.compile_dut, duts)
@@ -112,6 +121,9 @@ if __name__ == "__main__":
                         duts = verifier_pool.map(ProcessorfuzzDUT.compile_reference, duts)
                         duts = verifier_pool.map(ProcessorfuzzDUT.check_mismatch, duts)
                     elif fuzzer == "no_cov_processorfuzz":
+                        if host.name == "ibex":
+                            print("ProcessorFuzz does not support Ibex, skipping!")
+                            continue
                         duts = [NoCovProcessorfuzzDUT(host, bug) for bug in bugs]
                         duts = verifier_pool.map(NoCovProcessorfuzzDUT.create_dut, duts)
                         duts = verifier_pool.map(NoCovProcessorfuzzDUT.compile_dut, duts)
