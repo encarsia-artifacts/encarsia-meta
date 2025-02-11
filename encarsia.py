@@ -15,6 +15,7 @@ from fuzzers.no_cov_difuzzrtl_dut import NoCovDifuzzRTLDUT
 from fuzzers.processorfuzz_dut import ProcessorfuzzDUT
 from fuzzers.no_cov_processorfuzz_dut import NoCovProcessorfuzzDUT
 from fuzzers.prefilter_dut import PrefilterDUT
+import plot
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-d", "--directory", type=str, default=os.path.join(os.getcwd(), "out", datetime.datetime.now().strftime("%d-%m-%Y-%H-%M-%S")), help="Working directory.\nA new directory will be created if none is specified.")
@@ -35,6 +36,8 @@ if __name__ == "__main__":
         host.inject()
         mux_directories = [name for name in os.listdir(host.mux_directory) if os.path.isdir(os.path.join(host.mux_directory, name))]
         driver_directories = [name for name in os.listdir(host.driver_directory) if os.path.isdir(os.path.join(host.driver_directory, name))]
+        plot.save_injection_results(host)
+
         if args.driver_bugs:
             for driver_bug in args.driver_bugs:
                 if driver_bug not in driver_directories:
@@ -78,6 +81,8 @@ if __name__ == "__main__":
             if args.yosys_verify:
                 bugs = verifier_pool.map(Bug.create_miter, bugs)
                 bugs = verifier_pool.map(Bug.yosys_verify, bugs)
+                plot.save_verification_results(host, bugs)
+                
                 bugs = [bug for bug in bugs if os.path.exists(bug.yosys_proof_path)]
 
             if args.fuzzers:
@@ -87,6 +92,7 @@ if __name__ == "__main__":
                         duts = verifier_pool.map(CascadeDUT.create_dut, duts)
                         duts = verifier_pool.map(CascadeDUT.compile_dut, duts)
                         duts = verifier_pool.map(CascadeDUT.fuzz, duts)
+                        plot.save_fuzzing_results(host, fuzzer, duts)
                     elif fuzzer == "difuzzrtl":
                         if host.name == "ibex":
                             print("DifuzzRTL does not support Ibex, skipping!")
@@ -98,6 +104,7 @@ if __name__ == "__main__":
                         duts = verifier_pool.map(DifuzzRTLDUT.create_reference, duts)
                         duts = verifier_pool.map(DifuzzRTLDUT.compile_reference, duts)
                         duts = verifier_pool.map(DifuzzRTLDUT.check_mismatch, duts)
+                        plot.save_fuzzing_results(host, fuzzer, duts)
                     elif fuzzer == "no_cov_difuzzrtl":
                         if host.name == "ibex":
                             print("DifuzzRTL does not support Ibex, skipping!")
@@ -109,6 +116,7 @@ if __name__ == "__main__":
                         duts = verifier_pool.map(NoCovDifuzzRTLDUT.create_reference, duts)
                         duts = verifier_pool.map(NoCovDifuzzRTLDUT.compile_reference, duts)
                         duts = verifier_pool.map(NoCovDifuzzRTLDUT.check_mismatch, duts)
+                        plot.save_fuzzing_results(host, fuzzer, duts)
                     elif fuzzer == "processorfuzz":
                         if host.name == "ibex":
                             print("ProcessorFuzz does not support Ibex, skipping!")
@@ -120,6 +128,7 @@ if __name__ == "__main__":
                         duts = verifier_pool.map(ProcessorfuzzDUT.create_reference, duts)
                         duts = verifier_pool.map(ProcessorfuzzDUT.compile_reference, duts)
                         duts = verifier_pool.map(ProcessorfuzzDUT.check_mismatch, duts)
+                        plot.save_fuzzing_results(host, fuzzer, duts)
                     elif fuzzer == "no_cov_processorfuzz":
                         if host.name == "ibex":
                             print("ProcessorFuzz does not support Ibex, skipping!")
@@ -131,5 +140,10 @@ if __name__ == "__main__":
                         duts = verifier_pool.map(NoCovProcessorfuzzDUT.create_reference, duts)
                         duts = verifier_pool.map(NoCovProcessorfuzzDUT.compile_reference, duts)
                         duts = verifier_pool.map(NoCovProcessorfuzzDUT.check_mismatch, duts)
+                        plot.save_fuzzing_results(host, fuzzer, duts)
                     else:
                         raise Exception(f"Fuzzer '{fuzzer}' not found!")
+                    
+    plot.plot_injection()
+    plot.plot_verification()
+    plot.plot_fuzzing()
