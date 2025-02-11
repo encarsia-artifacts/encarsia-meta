@@ -57,7 +57,7 @@ class Bug:
         self.yosys_verify_log = os.path.join(self.directory, "yosys_verify.log")
         self.yosys_proof_path = os.path.join(self.directory, "yosys_proof.S")
 
-        if not os.path.exists(self.yosys_proof_path):
+        if not os.path.exists(self.yosys_verify_log):
             with open(self.yosys_verify_log, 'w') as f:
                 f.write(datetime.datetime.now().strftime("%d-%m-%Y-%H-%M-%S-%f"))
                 f.flush()
