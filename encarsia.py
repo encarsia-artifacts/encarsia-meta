@@ -6,6 +6,7 @@ import argparse
 import os
 import datetime
 import multiprocessing
+import subprocess
 
 from host import Host
 from bug import Bug
@@ -62,6 +63,7 @@ if __name__ == "__main__":
                 prefilter_duts = verifier_pool.map(PrefilterDUT.create_dut, prefilter_duts)
                 prefilter_duts = verifier_pool.map(PrefilterDUT.compile_dut, prefilter_duts)
                 prefilter_duts = verifier_pool.map(PrefilterDUT.fuzz, prefilter_duts)
+                subprocess.run(["stty", "echo"])
 
                 prefiltered_bugs = []
                 for bug in bugs:
@@ -92,6 +94,7 @@ if __name__ == "__main__":
                         duts = verifier_pool.map(CascadeDUT.create_dut, duts)
                         duts = verifier_pool.map(CascadeDUT.compile_dut, duts)
                         duts = verifier_pool.map(CascadeDUT.fuzz, duts)
+                        subprocess.run(["stty", "echo"])
                         plot.save_fuzzing_results(host, fuzzer, duts)
                     elif fuzzer == "difuzzrtl":
                         if host.name == "ibex":
@@ -104,6 +107,7 @@ if __name__ == "__main__":
                         duts = verifier_pool.map(DifuzzRTLDUT.create_reference, duts)
                         duts = verifier_pool.map(DifuzzRTLDUT.compile_reference, duts)
                         duts = verifier_pool.map(DifuzzRTLDUT.check_mismatch, duts)
+                        subprocess.run(["stty", "echo"])
                         plot.save_fuzzing_results(host, fuzzer, duts)
                     elif fuzzer == "no_cov_difuzzrtl":
                         if host.name == "ibex":
@@ -116,6 +120,7 @@ if __name__ == "__main__":
                         duts = verifier_pool.map(NoCovDifuzzRTLDUT.create_reference, duts)
                         duts = verifier_pool.map(NoCovDifuzzRTLDUT.compile_reference, duts)
                         duts = verifier_pool.map(NoCovDifuzzRTLDUT.check_mismatch, duts)
+                        subprocess.run(["stty", "echo"])
                         plot.save_fuzzing_results(host, fuzzer, duts)
                     elif fuzzer == "processorfuzz":
                         if host.name == "ibex":
@@ -128,6 +133,7 @@ if __name__ == "__main__":
                         duts = verifier_pool.map(ProcessorfuzzDUT.create_reference, duts)
                         duts = verifier_pool.map(ProcessorfuzzDUT.compile_reference, duts)
                         duts = verifier_pool.map(ProcessorfuzzDUT.check_mismatch, duts)
+                        subprocess.run(["stty", "echo"])
                         plot.save_fuzzing_results(host, fuzzer, duts)
                     elif fuzzer == "no_cov_processorfuzz":
                         if host.name == "ibex":
@@ -140,6 +146,7 @@ if __name__ == "__main__":
                         duts = verifier_pool.map(NoCovProcessorfuzzDUT.create_reference, duts)
                         duts = verifier_pool.map(NoCovProcessorfuzzDUT.compile_reference, duts)
                         duts = verifier_pool.map(NoCovProcessorfuzzDUT.check_mismatch, duts)
+                        subprocess.run(["stty", "echo"])
                         plot.save_fuzzing_results(host, fuzzer, duts)
                     else:
                         raise Exception(f"Fuzzer '{fuzzer}' not found!")
