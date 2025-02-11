@@ -89,6 +89,7 @@ class NoCovProcessorfuzzDUT():
                 check=True,
                 cwd=defines.PROCESSORFUZZ_FUZZER,
                 stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
                 env=self.env
             )
 
@@ -143,6 +144,7 @@ class NoCovProcessorfuzzDUT():
                 check=True,
                 cwd=defines.PROCESSORFUZZ_FUZZER,
                 stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
                 env=self.env
             )
 
@@ -163,6 +165,7 @@ class NoCovProcessorfuzzDUT():
                 check=True,
                 cwd=defines.PROCESSORFUZZ_FUZZER,
                 stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
                 env=self.env
             )
 
@@ -198,6 +201,7 @@ class NoCovProcessorfuzzDUT():
                     check=True,
                     cwd=defines.PROCESSORFUZZ_FUZZER,
                     stdout=open(log_replay, 'w'),
+                    stderr=subprocess.DEVNULL,
                     env=self.env
                 )
             with open(log_replay, 'r') as log_file:
@@ -224,6 +228,7 @@ class NoCovProcessorfuzzDUT():
                     check=True,
                     cwd=defines.PROCESSORFUZZ_FUZZER,
                     stdout=open(log, 'w'),
+                    stderr=subprocess.DEVNULL,
                     env=self.env
                 )
 

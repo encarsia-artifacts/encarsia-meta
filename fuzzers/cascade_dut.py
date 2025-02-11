@@ -90,6 +90,7 @@ class CascadeDUT():
                     cwd=self.host.config.cascade_directory,
                     env=self.env,
                     stdout=open(os.path.join(self.directory, "build.log"), 'w'),
+                    stderr=subprocess.DEVNULL,
                 )
             else:
                 subprocess.run(
@@ -98,6 +99,7 @@ class CascadeDUT():
                     cwd=self.host.config.cascade_directory,
                     env=self.env,
                     stdout=open(os.path.join(self.directory, "build.log"), 'w'),
+                    stderr=subprocess.DEVNULL,
                 )
             shutil.copy(os.path.join(self.host.config.cascade_directory, "build", self.name+"_0.1", "default-verilator", self.host.config.cascade_executable), self.verilator_executable)
             shutil.rmtree(os.path.join(self.host.config.cascade_directory, "build", self.name+"_0.1"))

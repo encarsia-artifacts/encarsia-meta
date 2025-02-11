@@ -85,6 +85,7 @@ class DifuzzRTLDUT():
                 check=True,
                 cwd=defines.DIFUZZRTL_FUZZER,
                 stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
                 env=self.env
             )
 
@@ -130,6 +131,7 @@ class DifuzzRTLDUT():
                 check=True,
                 cwd=defines.DIFUZZRTL_FUZZER,
                 stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
                 env=self.env
             )
 
@@ -158,6 +160,7 @@ class DifuzzRTLDUT():
                     check=True,
                     cwd=defines.DIFUZZRTL_FUZZER,
                     stdout=open(log, 'w'),
+                    stderr=subprocess.DEVNULL,
                     env=self.env
                 )
 
