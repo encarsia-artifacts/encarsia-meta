@@ -34,6 +34,7 @@ working_directory = os.path.abspath(args.directory)
 if __name__ == "__main__":
     # TODO parallelize injection
     for host in [Host(working_directory, name) for name in args.hosts]:
+        print(f"Injecting bugs into {host.name}")
         host.inject()
         mux_directories = [name for name in os.listdir(host.mux_directory) if os.path.isdir(os.path.join(host.mux_directory, name))]
         driver_directories = [name for name in os.listdir(host.driver_directory) if os.path.isdir(os.path.join(host.driver_directory, name))]
@@ -60,8 +61,11 @@ if __name__ == "__main__":
             
             if args.prefilter:
                 prefilter_duts = [PrefilterDUT(host, bug) for bug in bugs]
+                print("Encapsulating buggy designs in wrapper modules for compatibility with the prefilter")
                 prefilter_duts = verifier_pool.map(PrefilterDUT.create_dut, prefilter_duts)
+                print("Compiling buggy designs for RTL simulation")
                 prefilter_duts = verifier_pool.map(PrefilterDUT.compile_dut, prefilter_duts)
+                print("Prefiltering")
                 prefilter_duts = verifier_pool.map(PrefilterDUT.fuzz, prefilter_duts)
                 subprocess.run(["stty", "echo"])
 
@@ -96,9 +100,9 @@ if __name__ == "__main__":
                     if fuzzer == "cascade":
                         print(f"Fuzzing {host.name} with Cascade")
                         duts = [CascadeDUT(host, bug) for bug in bugs]
-                        print("Encapsulating the design in a wrapper module for compatibility with the fuzzer")
+                        print("Encapsulating buggy designs in wrapper modules for compatibility with the fuzzer")
                         duts = verifier_pool.map(CascadeDUT.create_dut, duts)
-                        print("Compiling the design for RTL simulation")
+                        print("Compiling buggy designs for RTL simulation")
                         duts = verifier_pool.map(CascadeDUT.compile_dut, duts)
                         print("Fuzzing")
                         duts = verifier_pool.map(CascadeDUT.fuzz, duts)
@@ -110,15 +114,15 @@ if __name__ == "__main__":
                             continue
                         print(f"Fuzzing {host.name} with DifuzzRTL")
                         duts = [DifuzzRTLDUT(host, bug) for bug in bugs]
-                        print("Encapsulating the design in a wrapper module for compatibility with the fuzzer")
+                        print("Encapsulating buggy designs in wrapper modules for compatibility with the fuzzer")
                         duts = verifier_pool.map(DifuzzRTLDUT.create_dut, duts)
-                        print("Compiling the design for RTL simulation")
+                        print("Compiling buggy designs for RTL simulation")
                         duts = verifier_pool.map(DifuzzRTLDUT.compile_dut, duts)
                         print("Fuzzing")
                         duts = verifier_pool.map(DifuzzRTLDUT.fuzz, duts)
-                        print("Encapsulating the reference design in a wrapper module for compatibility with the fuzzer")
+                        print("Encapsulating reference designs in wrapper modules for compatibility with the fuzzer")
                         duts = verifier_pool.map(DifuzzRTLDUT.create_reference, duts)
-                        print("Compiling the reference design for RTL simulation")
+                        print("Compiling reference designs for RTL simulation")
                         duts = verifier_pool.map(DifuzzRTLDUT.compile_reference, duts)
                         print("Filtering false positives")
                         duts = verifier_pool.map(DifuzzRTLDUT.check_mismatch, duts)
@@ -130,15 +134,15 @@ if __name__ == "__main__":
                             continue
                         print(f"Fuzzing {host.name} with DifuzzRTL (no coverage)")
                         duts = [NoCovDifuzzRTLDUT(host, bug) for bug in bugs]
-                        print("Encapsulating the design in a wrapper module for compatibility with the fuzzer")
+                        print("Encapsulating buggy designs in wrapper modules for compatibility with the fuzzer")
                         duts = verifier_pool.map(NoCovDifuzzRTLDUT.create_dut, duts)
-                        print("Compiling the design for RTL simulation")
+                        print("Compiling buggy designs for RTL simulation")
                         duts = verifier_pool.map(NoCovDifuzzRTLDUT.compile_dut, duts)
                         print("Fuzzing")
                         duts = verifier_pool.map(NoCovDifuzzRTLDUT.fuzz, duts)
-                        print("Encapsulating the reference design in a wrapper module for compatibility with the fuzzer")
+                        print("Encapsulating reference designs in wrapper modules for compatibility with the fuzzer")
                         duts = verifier_pool.map(NoCovDifuzzRTLDUT.create_reference, duts)
-                        print("Compiling the reference design for RTL simulation")
+                        print("Compiling reference designs for RTL simulation")
                         duts = verifier_pool.map(NoCovDifuzzRTLDUT.compile_reference, duts)
                         print("Filtering false positives")
                         duts = verifier_pool.map(NoCovDifuzzRTLDUT.check_mismatch, duts)
@@ -150,15 +154,15 @@ if __name__ == "__main__":
                             continue
                         print(f"Fuzzing {host.name} with ProcessorFuzz")
                         duts = [ProcessorfuzzDUT(host, bug) for bug in bugs]
-                        print("Encapsulating the design in a wrapper module for compatibility with the fuzzer")
+                        print("Encapsulating buggy designs in wrapper modules for compatibility with the fuzzer")
                         duts = verifier_pool.map(ProcessorfuzzDUT.create_dut, duts)
-                        print("Compiling the design for RTL simulation")
+                        print("Compiling buggy designs for RTL simulation")
                         duts = verifier_pool.map(ProcessorfuzzDUT.compile_dut, duts)
                         print("Fuzzing")
                         duts = verifier_pool.map(ProcessorfuzzDUT.fuzz, duts)
-                        print("Encapsulating the reference design in a wrapper module for compatibility with the fuzzer")
+                        print("Encapsulating reference designs in wrapper modules for compatibility with the fuzzer")
                         duts = verifier_pool.map(ProcessorfuzzDUT.create_reference, duts)
-                        print("Compiling the reference design for RTL simulation")
+                        print("Compiling reference designs for RTL simulation")
                         duts = verifier_pool.map(ProcessorfuzzDUT.compile_reference, duts)
                         print("Filtering false positives")
                         duts = verifier_pool.map(ProcessorfuzzDUT.check_mismatch, duts)
@@ -170,15 +174,15 @@ if __name__ == "__main__":
                             continue
                         print(f"Fuzzing {host.name} with ProcessorFuzz (no coverage)")
                         duts = [NoCovProcessorfuzzDUT(host, bug) for bug in bugs]
-                        print("Encapsulating the design in a wrapper module for compatibility with the fuzzer")
+                        print("Encapsulating buggy designs in wrapper modules for compatibility with the fuzzer")
                         duts = verifier_pool.map(NoCovProcessorfuzzDUT.create_dut, duts)
-                        print("Compiling the design for RTL simulation")
+                        print("Compiling buggy designs for RTL simulation")
                         duts = verifier_pool.map(NoCovProcessorfuzzDUT.compile_dut, duts)
                         print("Fuzzing")
                         duts = verifier_pool.map(NoCovProcessorfuzzDUT.fuzz, duts)
-                        print("Encapsulating the reference design in a wrapper module for compatibility with the fuzzer")
+                        print("Encapsulating reference designs in wrapper modules for compatibility with the fuzzer")
                         duts = verifier_pool.map(NoCovProcessorfuzzDUT.create_reference, duts)
-                        print("Compiling the reference design for RTL simulation")
+                        print("Compiling reference designs for RTL simulation")
                         duts = verifier_pool.map(NoCovProcessorfuzzDUT.compile_reference, duts)
                         print("Filtering false positives")
                         duts = verifier_pool.map(NoCovProcessorfuzzDUT.check_mismatch, duts)
