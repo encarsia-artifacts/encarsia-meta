@@ -29,7 +29,8 @@ def save_injection_results(host):
 
 def plot_injection():
   injection_headers = ["Design", "#Transf. (Mix-ups)", "Avg. T. (Mix-ups)", "#Transf. (Conditionals)", "Avg. T. (Conditionals)"]
-  print(tabulate.tabulate(injection_data, headers=injection_headers, stralign="center", numalign="right", tablefmt="grid") + "\n")
+  print("\nInjection results:")
+  print(tabulate.tabulate(injection_data, headers=injection_headers, stralign="center", numalign="right", tablefmt="grid"))
 
 verification_data = []
 def save_verification_results(host, bugs):
@@ -49,7 +50,8 @@ def save_verification_results(host, bugs):
 
 def plot_verification():
     verification_headers = ["Design", "#Transf. (Mix-ups)", "Succ. % (Mix-ups)", "Avg. T. (Mix-ups)", "#Transf. (Conditionals)", "Succ. % (Conditionals)", "Avg. T. (Conditionals)"]
-    print(tabulate.tabulate(verification_data, headers=verification_headers, stralign="center", numalign="right", tablefmt="grid") + "\n")
+    print("\nVerification results:")
+    print(tabulate.tabulate(verification_data, headers=verification_headers, stralign="center", numalign="right", tablefmt="grid"))
 
 fuzzing_data = []
 totals = []
@@ -88,4 +90,5 @@ def plot_fuzzing():
         row.extend(["-" for _ in range(len(fuzzing_headers) - len(row) - 1)])
         row.append(totals.pop(0))
         
-    print(tabulate.tabulate(fuzzing_data, headers=fuzzing_headers, stralign="center", numalign="right", tablefmt="grid") + "\n")
+    print("\nFuzzing results:")
+    print(tabulate.tabulate(fuzzing_data, headers=fuzzing_headers, stralign="center", numalign="right", tablefmt="grid"))
